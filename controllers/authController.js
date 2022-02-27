@@ -25,7 +25,6 @@ const createSendToken = (user, statusCode, res) => {
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
-
   // sending response to client
   user.password = undefined;
   res.status(statusCode).json({
@@ -65,6 +64,11 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logout = (req, res) => {
+  res.clearCookie('jwt');
+  res.status(200).json({ status: 'success' });
+};
+
 exports.validateUser = catchAsync(async (req, res, next) => {
   // 1) getting token and checking if it's there
   let token;
@@ -73,7 +77,7 @@ exports.validateUser = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-  }
+  } else if (req.cookies.jwt) token = req.cookies.jwt;
   if (!token)
     return next(new AppError('you are not logged in..please login first', 401));
   // 2) verifacatiom of tokens
@@ -98,6 +102,37 @@ exports.validateUser = catchAsync(async (req, res, next) => {
   //GRANT ACCESS TO PROTECTED ROUTES
   next();
 });
+
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+
+      // 2) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (currentUser.changedPassword(decoded.iat)) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER
+
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+  next();
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
