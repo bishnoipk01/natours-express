@@ -14,8 +14,10 @@ export const updateSetting = async (data, type) => {
       data
     });
     if (res.data.status === 'success') {
-      showAlert('success', 'Details updated successfully!');
-      location.reload();
+      showAlert('success', `${type} updated successfully!`);
+      window.setTimeout(() => {
+        location.reload();
+      }, 500);
     }
   } catch (err) {
     showAlert('error', `failed to update your ${type}..try again`);

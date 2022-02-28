@@ -9,6 +9,7 @@ const formLogin = document.querySelector('.form-login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const map = document.getElementById('map');
 const formData = document.querySelector('.form-user-data');
+const formPassword = document.querySelector('.form-user-settings');
 
 // display maps
 if (map) {
@@ -36,5 +37,25 @@ if (formData)
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
-    updateSetting({ name, email });
+    updateSetting({ name, email }, 'Details');
+  });
+
+if (formPassword)
+  formPassword.addEventListener('submit', async e => {
+    e.preventDefault();
+    document.querySelector('.btn--save-password').textContent = 'Updating...';
+
+    const passwordCurrent = document.getElementById('password-current').value;
+    const password = document.getElementById('password').value;
+    const passwordMatch = document.getElementById('password-confirm').value;
+
+    await updateSetting(
+      { passwordCurrent, password, passwordMatch },
+      'password'
+    );
+
+    document.querySelector('.btn--save-password').textContent = 'Save password';
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
   });
