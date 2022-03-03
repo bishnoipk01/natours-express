@@ -15,7 +15,12 @@ userRouter.patch('/resetPassword/:token', authController.resetPassword);
 // authenticate user for all the following routes
 userRouter.use(authController.validateUser);
 
-userRouter.patch('/updateMyDetails', userController.updateMe);
+userRouter.patch(
+  '/updateMyDetails',
+  userController.uploadPhoto,
+  userController.resizeImage,
+  userController.updateMe
+);
 userRouter.patch('/resetMyPassword', authController.updatePassword);
 userRouter.delete('/deleteMe', userController.deleteMe);
 

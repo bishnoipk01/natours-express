@@ -9312,12 +9312,12 @@ if (logoutBtn) logoutBtn.addEventListener('click', function () {
 });
 if (formData) formData.addEventListener('submit', function (e) {
   e.preventDefault();
-  var name = document.getElementById('name').value;
-  var email = document.getElementById('email').value;
-  (0, _updateSetting.updateSetting)({
-    name: name,
-    email: email
-  }, 'Details');
+  var form = new FormData();
+  form.append('name', document.getElementById('name').value);
+  form.append('email', document.getElementById('email').value);
+  form.append('photo', document.getElementById('photo').files[0]);
+  console.log(form);
+  (0, _updateSetting.updateSetting)(form, 'Details');
 });
 if (formPassword) formPassword.addEventListener('submit', /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
@@ -9384,7 +9384,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "43985" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "41945" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
