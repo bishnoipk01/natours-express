@@ -5,8 +5,8 @@ Natours Website : https://natours-pk.herokuapp.com/
 
 This API has many features -
 
-Follows REST Architecture
-tours/users can query based on filter object
-supports user Authentication using JWT
-offers user password recovery/reset using token sent via email
-Implements CRUD on Users.Tours.Reviews
+- Follows REST Architecture
+- tours/users can query based on filter object
+- supports user Authentication using JWT
+- offers user password recovery/reset using token sent via email
+- Implements CRUD on Users.Tours.Reviews
